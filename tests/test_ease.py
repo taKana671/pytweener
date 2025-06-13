@@ -3,7 +3,9 @@ import unittest
 from ..ease import Ease
 
 
+# In the upper directory of pytweener, run the test with the following command.
 # python -m unittest pytweener.tests.test_ease -v
+
 
 functions = [
     'linear',

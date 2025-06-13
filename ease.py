@@ -2,9 +2,10 @@ import math
 
 
 class Ease:
-    """
-    easing functions are based on https://easings.net/.
-    # http://robertpenner.com/easing/
+    """A class to privide easing functions.
+       The functions are based on https://easings.net/.
+       The variable x represents the absolute progress of the animation
+        in the bounds of 0 (beginning of the animation) and 1 (end of animation). 
     """
 
     @staticmethod
@@ -13,9 +14,6 @@ class Ease:
 
     @staticmethod
     def in_sine(x):
-        """The variable x represents the absolute progress of the animation
-           in the bounds of 0 (beginning of the animation) and 1 (end of animation).
-        """
         return x if x == 1.0 else 1 - math.cos((x * math.pi) / 2)
 
     @staticmethod

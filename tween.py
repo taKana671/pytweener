@@ -3,6 +3,18 @@ from .ease import Ease
 
 
 class Tween:
+    """A class for Tweening.
+        Args:
+            start (float):
+                The starting point of the animation;
+                can be specified as a scalar, numpy.ndarray, panda3d.core.Point2, Point3 and so on.
+            end (float):
+                The end point of the animation;
+                can be specified as a scalar, numpy.ndarray, panda3d.core.Point2, Point3 and so on.
+            duration (int): The time that an animation takes to complete; specify in seconds.
+            yoyo (bool): If true, go to the end point and come back, if false, just go to the end point; default is false.
+            easing_type (string): the function name defined in the Ease class; default is linear.
+    """
 
     def __init__(self, start, end, duration, yoyo=False, easing_type='linear'):
         self.start_pt = start
