@@ -4,7 +4,7 @@ from unittest import mock
 from io import StringIO
 
 import numpy as np
-from panda3d.core import Vec2, Vec3, Point2, Point3
+from panda3d.core import Vec2, Vec3
 
 from ..tween import Tween
 from ..ease import Ease
@@ -273,10 +273,8 @@ class TestUpdate(unittest.TestCase):
             [0, 100, 50],
             [np.array([0, 0, 0]), np.array([100, 100, 100]), np.array([50, 50, 50])],
             [np.array([0, 0]), np.array([100, 100]), np.array([50, 50])],
-            [Vec2(0, 0), Point2(100, 100), Vec2(50, 50)],
-            [Vec3(0, 0, 0), Vec3(100, 100, 100), Vec3(50, 50, 50)],
-            [Point2(0, 0), Point2(100, 100), Point2(50, 50)],
-            [Point3(0, 0, 0), Point3(100, 100, 100), Point3(50, 50, 50)]
+            [Vec2(0, 0), Vec2(100, 100), Vec2(50, 50)],
+            [Vec3(0, 0, 0), Vec3(100, 100, 100), Vec3(50, 50, 50)]
         ]
 
         for start, end, expect in tests:
