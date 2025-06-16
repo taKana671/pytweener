@@ -4,7 +4,7 @@ from unittest import mock
 from io import StringIO
 
 import numpy as np
-from panda3d.core import Vec2, Vec3
+from panda3d.core import Vec2, Vec3, Point2, Point3
 
 from ..tween import Tween
 from ..ease import Ease
@@ -273,8 +273,10 @@ class TestUpdate(unittest.TestCase):
             [0, 100, 50],
             [np.array([0, 0, 0]), np.array([100, 100, 100]), np.array([50, 50, 50])],
             [np.array([0, 0]), np.array([100, 100]), np.array([50, 50])],
-            [Vec2(0, 0), Vec2(100, 100), Vec2(50, 50)],
-            [Vec3(0, 0, 0), Vec3(100, 100, 100), Vec3(50, 50, 50)]
+            [Vec2(0, 0), Point2(100, 100), Vec2(50, 50)],
+            [Vec3(0, 0, 0), Vec3(100, 100, 100), Vec3(50, 50, 50)],
+            [Point2(0, 0), Point2(100, 100), Point2(50, 50)],
+            [Point3(0, 0, 0), Point3(100, 100, 100), Point3(50, 50, 50)]
         ]
 
         for start, end, expect in tests:
@@ -384,3 +386,38 @@ class TestUpdate(unittest.TestCase):
         self.assertTrue(tween.is_playing)
         self.check_value(tween, start_pt=0, end_pt=100, start_time=1002)
         mock_continue.assert_called_once()
+
+
+@mock.patch('pytweener.tween.Tween.start')
+class TestDelayStart(unittest.TestCase):
+    """tests for Tween.delay_start
+    """
+
+    def test_delay_start(self, mock_start):
+
+        for elapsed in [0.5, 0.6]:
+            with self.subTest(elapsed):
+                tween = Tween(0, 100, 2, delay=0.5, easing_type='linear')
+                self.assertFalse(tween.delay_started)
+                tween.delay_start(elapsed)
+
+                self.assertTrue(tween.delay_started)
+                mock_start.assert_called_once()
+                mock_start.reset_mock()
+
+    def test_not_delay_start(self, mock_start):
+        tests = [
+            [False, 0.4],
+            [True, 0.5],
+            [True, 0.6]
+        ]
+
+        for delay_started, elapsed in tests:
+            with self.subTest((delay_started, elapsed)):
+                tween = Tween(0, 100, 2, delay=0.5, easing_type='linear')
+                tween.delay_started = delay_started
+                tween.delay_start(elapsed)
+
+                self.assertEqual(tween.delay_started, delay_started)
+                mock_start.assert_not_called()
+                mock_start.reset_mock()

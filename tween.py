@@ -16,12 +16,12 @@ class Tween:
             easing_type (string): the function name defined in the Ease class; default is linear.
     """
 
-    def __init__(self, start, end, duration, yoyo=False, easing_type='linear'):
+    def __init__(self, start, end, duration, delay=0, yoyo=False, easing_type='linear'):
         self.start_pt = start
         self.end_pt = end
         self._start_pt = start
-
         self.duration = duration * 1000
+        self.delay = delay
         self.yoyo = yoyo
 
         self.is_playing = False
@@ -29,6 +29,7 @@ class Tween:
         self.is_paused = False
         self.pause_start_time = None
         self.do_finish = False
+        self.delay_started = False
 
         self.ease = self.get_ease_func(easing_type)
 
@@ -51,6 +52,11 @@ class Tween:
     def start(self):
         if not self.is_playing:
             self.setup(False, None)
+
+    def delay_start(self, elapsed):
+        if not self.delay_started and elapsed >= self.delay:
+            self.delay_started = True
+            self.start()
 
     def loop(self, repeat=None):
         if not self.is_playing:
