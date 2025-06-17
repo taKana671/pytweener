@@ -12,6 +12,7 @@ class Tween:
                 The end point of the animation;
                 can be specified as a scalar, numpy.ndarray, panda3d.core.Point2, Point3 and so on.
             duration (int): The time that an animation takes to complete; specify in seconds.
+            delay (float): start delay time
             yoyo (bool): If true, go to the end point and come back, if false, just go to the end point; default is false.
             easing_type (string): the function name defined in the Ease class; default is linear.
     """
@@ -54,8 +55,9 @@ class Tween:
             self.setup(False, None)
 
     def delay_start(self, elapsed):
-        if not self.delay_started and elapsed >= self.delay:
-            self.delay_started = True
+        # if not self.delay_started and elapsed >= self.delay:
+        if elapsed >= self.delay:
+            # self.delay_started = True
             self.start()
 
     def loop(self, repeat=None):
@@ -77,10 +79,15 @@ class Tween:
         if self.is_playing and not self.is_paused:
             self.do_finish = True
 
+    def turn(self):
+        self.start_pt, self.end_pt = self.end_pt, self.start_pt
+
     def turn_back(self):
-        if not (self.is_playing or self.yoyo or self.do_loop):
-            self.start_pt, self.end_pt = self.end_pt, self.start_pt
-            self.setup(False, None)
+        # if not (self.is_playing or self.yoyo or self.do_loop):
+        # if not (self.yoyo or self.do_loop):
+        self.turn()
+        self.start()
+            # self.setup(False, None)
 
     def update(self):
         if self.is_playing and not self.is_paused:
