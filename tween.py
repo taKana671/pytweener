@@ -30,7 +30,6 @@ class Tween:
         self.is_paused = False
         self.pause_start_time = None
         self.do_finish = False
-        self.delay_started = False
 
         self.ease = self.get_ease_func(easing_type)
 
@@ -55,9 +54,7 @@ class Tween:
             self.setup(False, None)
 
     def delay_start(self, elapsed):
-        # if not self.delay_started and elapsed >= self.delay:
         if elapsed >= self.delay:
-            # self.delay_started = True
             self.start()
 
     def loop(self, repeat=None):
@@ -83,11 +80,8 @@ class Tween:
         self.start_pt, self.end_pt = self.end_pt, self.start_pt
 
     def turn_back(self):
-        # if not (self.is_playing or self.yoyo or self.do_loop):
-        # if not (self.yoyo or self.do_loop):
         self.turn()
         self.start()
-            # self.setup(False, None)
 
     def update(self):
         if self.is_playing and not self.is_paused:
@@ -102,7 +96,8 @@ class Tween:
             if self.step == 1.0:
                 if self.yoyo:
                     self.start_time = current_time
-                    self.start_pt, self.end_pt = self.end_pt, self.start_pt
+                    self.turn()
+                    # self.start_pt, self.end_pt = self.end_pt, self.start_pt
 
                     if not self.is_turning_back:
                         self.is_turning_back = True

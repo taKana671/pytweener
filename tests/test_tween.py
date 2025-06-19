@@ -181,48 +181,35 @@ class TestFinish(unittest.TestCase):
                 self.assertFalse(tween.do_finish)
 
 
-@mock.patch('pytweener.tween.Tween.setup')
+class TestTurn(unittest.TestCase):
+    """tests for turn
+    """
+
+    def test_turn(self):
+        tween = Tween(0, 1, 2, easing_type='in_sine')
+        self.assertEqual(tween.start_pt, 0)
+        self.assertEqual(tween.end_pt, 1)
+
+        tween.turn()
+        self.assertEqual(tween.start_pt, 1)
+        self.assertEqual(tween.end_pt, 0)
+
+
 class TestTurnBack(unittest.TestCase):
     """tests for Tween.turn_back
     """
 
-    def test_turn_back(self, mock_setup):
+    def test_turn_back(self):
         tween = Tween(0, 1, 2, easing_type='in_sine')
-        self.assertFalse(tween.yoyo)
         self.assertFalse(tween.is_playing)
         self.assertEqual(tween.start_pt, 0)
         self.assertEqual(tween.end_pt, 1)
-        tween.do_loop = False
 
         tween.turn_back()
 
-        mock_setup.assert_called_once_with(False, None)
+        self.assertTrue(tween.is_playing)
         self.assertEqual(tween.start_pt, 1)
         self.assertEqual(tween.end_pt, 0)
-
-    def test_not_turn_back(self, mock_setup):
-        tween = Tween(0, 1, 2, easing_type='in_sine')
-        tests = [
-            [True, True, True],
-            [True, False, False],
-            [True, False, True],
-            [True, True, False],
-            [False, True, True],
-            [False, True, False],
-            [False, False, True],
-        ]
-
-        for is_playing, yoyo, do_loop in tests:
-            tween.is_playing = is_playing
-            tween.yoyo = yoyo
-            tween.do_loop = do_loop
-            tween.turn_back()
-
-            mock_setup.assert_not_called()
-            self.assertEqual(tween.start_pt, 0)
-            self.assertEqual(tween.end_pt, 1)
-
-            mock_setup.reset_mock()
 
 
 class TestDoContinue(unittest.TestCase):
@@ -388,36 +375,23 @@ class TestUpdate(unittest.TestCase):
         mock_continue.assert_called_once()
 
 
-@mock.patch('pytweener.tween.Tween.start')
+@mock.patch('pytweener.tween.Tween.setup')
 class TestDelayStart(unittest.TestCase):
     """tests for Tween.delay_start
     """
 
-    def test_delay_start(self, mock_start):
-
+    def test_delay_start(self, mock_setup):
         for elapsed in [0.5, 0.6]:
             with self.subTest(elapsed):
                 tween = Tween(0, 100, 2, delay=0.5, easing_type='linear')
-                self.assertFalse(tween.delay_started)
                 tween.delay_start(elapsed)
+                mock_setup.assert_called_once_with(False, None)
+                mock_setup.reset_mock()
 
-                self.assertTrue(tween.delay_started)
-                mock_start.assert_called_once()
-                mock_start.reset_mock()
-
-    def test_not_delay_start(self, mock_start):
-        tests = [
-            [False, 0.4],
-            [True, 0.5],
-            [True, 0.6]
-        ]
-
-        for delay_started, elapsed in tests:
-            with self.subTest((delay_started, elapsed)):
+    def test_not_delay_start(self, mock_setup):
+        for elapsed in [0.0, 0.4]:
+            with self.subTest(elapsed):
                 tween = Tween(0, 100, 2, delay=0.5, easing_type='linear')
-                tween.delay_started = delay_started
                 tween.delay_start(elapsed)
-
-                self.assertEqual(tween.delay_started, delay_started)
-                mock_start.assert_not_called()
-                mock_start.reset_mock()
+                mock_setup.assert_not_called()
+                mock_setup.reset_mock()
